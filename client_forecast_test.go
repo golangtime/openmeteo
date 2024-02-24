@@ -54,6 +54,27 @@ func TestForecastOk(t *testing.T) {
 	require.Equal(t, -0.9, resp)
 }
 
+const testErrorResponse = `{
+	"error": true,
+	"reason": "some error"
+}`
+
+func TestForecastError(t *testing.T) {
+	svr := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, testErrorResponse)
+	}))
+	defer svr.Close()
+
+	cl := New(svr.URL)
+	_, err := cl.Forecast(ForecastParams{})
+	if err == nil {
+		t.Errorf("error was expected, got nil")
+		return
+	}
+
+	require.Equal(t, "some error", err.Error())
+}
+
 func TestForecastJsonUnmarshalFailed(t *testing.T) {
 	svr := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, testResponseFailed)

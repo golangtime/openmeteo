@@ -45,6 +45,8 @@ type ForecastResponse struct {
 		Time        string  `json:"time"`
 		Temperature float64 `json:"temperature_2m"`
 	} `json:"current"`
+	Error  bool   `json:"error"`
+	Reason string `json:"reason"`
 }
 
 const forecastURL = "/v1/forecast?latitude=%f&longitude=%f&current=temperature_2m&hourly=temperature_2m&timezone=%s"
@@ -74,6 +76,10 @@ func (cl *Client) Forecast(params ForecastParams) (float64, error) {
 
 	if err := json.Unmarshal(responseBody, &response); err != nil {
 		return 0, err
+	}
+
+	if response.Error {
+		return 0, errors.New(response.Reason)
 	}
 
 	return response.Current.Temperature, nil

@@ -10,16 +10,16 @@ Non official client for Openmeteo API
 package main
 
 import (
-    "fmt"
+	"fmt"
 
-    "github.com/golangtime/openmeteo"
+	"github.com/golangtime/openmeteo"
 )
 
 func main() {
-    // create new openmeteo client instance
+	// create new openmeteo client instance
 	client := openmeteo.New("")
 
-    latitude, longitude := float32(0), float32(0)
+	latitude, longitude := float32(0), float32(0)
 
 	// call the forecast method to get the current weather
 	temperature, err := client.Forecast(openmeteo.ForecastParams{
